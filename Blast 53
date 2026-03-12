@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ice Blast - Adventure Master</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="live-leaderboard" class="hidden">
+        <input type="text" id="live-name-input" class="live-name-input" placeholder="Dein Name" title="Name ändern">
+        <div class="live-lb-header">
+            <div class="live-lb-title">🏆 Rangliste</div>
+            <div class="expand-lb-icon" id="btn-expand-lb" title="Rangliste vergrößern">⤢</div>
+        </div>
+        <div id="live-lb-list"></div>
+    </div>
+
+    <div id="ice-start-screen" class="ice-start-screen">
+        <div class="logo-container">
+            <div class="logo-ice">
+                <span class="logo-crown">👑</span>
+                ICE
+            </div>
+            <div class="logo-blast">
+                <span class="letter-B">B</span>
+                <span class="letter-L">L</span>
+                <span class="letter-A">A</span>
+                <span class="letter-S">S</span>
+                <span class="letter-T">T</span>
+            </div>
+            <div class="logo-sub">ADVENTURE MASTER</div>
+        </div>
+
+        <div class="start-buttons-wrapper">
+            <button class="btn-menu btn-rangliste" id="btn-start-rangliste">
+                🏆 Rangliste
+                <span class="badge-dot"></span>
+            </button>
+            <button class="btn-menu btn-classic" id="btn-start-classic">
+                ♾️ Classic
+            </button>
+        </div>
+    </div>
+
+    <div class="header">
+        <div id="header-player-profile" class="player-profile hidden" title="Profil bearbeiten">
+            <div class="header-pic" id="header-pic"></div>
+            <div class="header-name" id="header-name">Name</div>
+        </div>
+        <div style="flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+            <div class="highscore" id="highscore-display">👑 0</div>
+            <div class="settings-icon" id="settings-btn">⚙️</div>
+        </div>
+    </div>
+
+    <div class="current-score-wrapper">
+        <div class="combo-display hidden" id="combo-display">
+            <span class="heart-icon">❤️</span>
+        </div>
+        <div class="current-score" id="current-score-display">0</div>
+    </div>
+
+    <div class="board-wrapper">
+        <div id="sweep-overlay" class="sweep-overlay"></div>
+        <div class="board" id="board"></div>
+    </div>
+
+    <div class="tray" id="tray">
+        <div class="shape-slot"><div class="shape-container"></div></div>
+        <div class="shape-slot"><div class="shape-container"></div></div>
+        <div class="shape-slot"><div class="shape-container"></div></div>
+    </div>
+
+    <div id="settings-modal" class="settings-overlay hidden">
+        <div class="settings-content">
+            <div class="settings-header">
+                <span>Settings</span>
+                <span class="close-settings" id="close-settings">✕</span>
+            </div>
+           
+            <div class="setting-item">
+                <div class="setting-left">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="white" width="28" height="28"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    </span> 
+                    <span>Sound</span>
+                </div>
+                <label class="switch"><input type="checkbox" id="toggle-sound"><span class="slider"></span></label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="white" width="28" height="28"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                    </span> 
+                    <span>BGM</span>
+                </div>
+                <label class="switch"><input type="checkbox" id="toggle-bgm"><span class="slider"></span></label>
+             </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="white" width="26" height="26"><path d="M0 15h2V9H0v6zm3 2h2V7H3v10zm19-8v6h2V9h-2zm-3 8h2V7h-2v10zM16.5 3h-9C6.67 3 6 3.67 6 4.5v15c0 .83.67 1.5 1.5 1.5h9c.83 0 1.5-.67 1.5-1.5v-15c0-.83-.67-1.5-1.5-1.5zM16 19H8V5h8v14z"/></svg>
+                    </span> 
+                    <span>Vibration</span>
+                </div>
+                <label class="switch"><input type="checkbox" id="toggle-vibration"><span class="slider"></span></label>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="white" width="30" height="30"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                    </span> 
+                    <span>Home</span>
+                </div>
+                <button class="action-btn" id="btn-settings-home">Back</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="white" width="28" height="28"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                    </span> 
+                    <span>Replay</span>
+                </div>
+                <button class="action-btn" id="btn-settings-replay">Play</button>
+             </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="white" width="26" height="26"><path d="M3 11h4v10H3zm5 4h13v6H8zm0-14h13v13H8z"/></svg>
+                    </span> 
+                    <span>More Games</span>
+                </div>
+                <button class="action-btn" onclick="window.location.href='zaamore_games.html'">Start</button>
+             </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <span class="icon">
+                        <svg viewBox="0 0 24 24" fill="white" width="28" height="28"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+                    </span> 
+                    <span>More Settings</span>
+                </div>
+                <button class="action-btn" id="btn-open-master">Set</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="master-settings-modal" class="master-fullscreen hidden">
+        <div class="master-fs-header" id="master-title" style="cursor: pointer;">Mastersettings</div>
+        <div class="master-fs-content">
+            
+            <div class="master-fs-item" style="flex-direction: column; align-items: stretch; gap: 10px;">
+                <div style="text-align: center;"><span>Daten Backup (Rangliste & Score)</span></div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="action-btn" id="btn-export-data" style="flex: 1; background-color: #3b82f6; box-shadow: 0 4px 0 #2563eb;">Exportieren</button>
+                    <button class="action-btn" id="btn-import-data" style="flex: 1; background-color: #fca5a5; box-shadow: 0 4px 0 #f87171; color: #7f1d1d;">Importieren</button>
+                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
+                </div>
+                <div id="backup-status-msg" style="text-align: center; font-size: 14px; font-weight: bold; min-height: 20px; transition: opacity 0.3s; opacity: 0;"></div>
+            </div>
+
+            <div class="master-fs-item mode-selector-container">
+                <div style="width: 100%; text-align: center;"><span>Spielmodus</span></div>
+                <div class="mode-options">
+                    <div class="mode-option active" id="mode-standard">
+                        <div class="mode-preview standard-preview"></div>
+                        <span>Standard</span>
+                    </div>
+
+                    <div class="mode-option" id="mode-adrian">
+                        <div class="mode-preview color-adrian"></div>
+                        <span>Adrian Modus</span>
+                    </div>
+
+                    <div class="mode-option" id="mode-ahmad">
+                        <div class="mode-preview color-image"></div>
+                        <span>Ahmad Modus</span>
+                    </div>
+                   
+                    <div class="mode-option" id="mode-emanuel">
+                        <div class="mode-preview color-emanuel"></div>
+                        <span>Emanuel Modus</span>
+                    </div>
+                 </div>
+            </div>
+
+            <div class="master-fs-item">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <span>Einfarbig (Standard)</span>
+                    <select id="single-color-select" style="background: #3b4c73; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; outline: none; width: fit-content;">
+                        <option value="color-hellblau">Hellblau</option>
+                        <option value="color-dunkelblau">Dunkelblau</option>
+                        <option value="color-gruen">Grün</option>
+                        <option value="color-gelb">Gelb</option>
+                        <option value="color-orange">Orange</option>
+                        <option value="color-rot">Rot</option>
+                        <option value="color-pink">Pink</option>
+                        <option value="color-lila">Lila</option>
+                    </select>
+                </div>
+                <label class="switch"><input type="checkbox" id="toggle-single-color"><span class="slider"></span></label>
+            </div>
+
+            <div class="master-fs-item">
+                <span>Meme bei 67</span>
+                <label class="switch"><input type="checkbox" id="toggle-meme" checked><span class="slider"></span></label>
+            </div>
+
+            <div class="master-fs-item">
+                <span>Quadratisches UI</span>
+                <label class="switch"><input type="checkbox" id="toggle-square-ui"><span class="slider"></span></label>
+            </div>
+
+            <div class="master-fs-item" id="original-mode-container">
+                <div style="display:flex; flex-direction:column; max-width: 70%;">
+                    <span>Original</span>
+                    <span style="font-size: 13px; color: #a9b7d6; font-weight: normal; margin-top: 4px; line-height: 1.3;">
+                        Füllt das Feld anfangs mit zufälligen Blöcken. Bis Score 100 erhältst du leichtere Formen zum Auflösen.
+                    </span>
+                </div>
+                <label class="switch"><input type="checkbox" id="toggle-original"><span class="slider"></span></label>
+            </div>
+        </div>
+
+        <div class="master-fs-footer">
+            <button class="btn-fs-back" id="btn-master-back">
+                <svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Zurück
+            </button>
+        </div>
+    </div>
+
+    <div id="custom-game-over-screen" class="custom-game-over-screen hidden">
+        <div class="top-right-icon">🔄</div> 
+        <div class="cgo-title">Game Over</div>
+        <div class="cgo-label">Score</div>
+        <div class="cgo-score" id="cgo-current">0</div>
+        <div class="cgo-label">Best Score</div>
+        <div class="cgo-best" id="cgo-best">0</div>
+        <button class="cgo-play-btn" id="cgo-play-btn">
+            <svg viewBox="0 0 24 24" fill="white" width="36px" height="36px"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+    </div>
+
+    <div id="ranked-setup-screen" class="settings-overlay hidden" style="z-index: 6000;">
+        <div class="settings-content" style="display: flex; flex-direction: column; gap: 15px; align-items: center; position: relative;">
+            <div class="settings-header" style="width: 100%; position: relative; min-height: 32px; justify-content: center; display: flex;">
+                <span style="font-size: 22px; text-align: center; margin: 0;">Rangliste spielen</span>
+                <span class="close-settings" id="close-ranked-setup" style="position: absolute; right: -5px; top: -5px; transform: none;">✕</span>
+            </div>
+            
+            <input type="text" id="ranked-name-input" placeholder="Dein Spielername" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #3b4c73; color: white; font-size: 16px; font-weight: bold; outline: none;">
+            
+            <div style="width: 100%; margin-top: 5px;">
+                <span style="color: #a9b7d6; font-size: 14px;">Vorgefertigte Bilder:</span>
+                <div id="preset-avatars" style="display: flex; gap: 8px; justify-content: center; margin-top: 8px; flex-wrap: wrap;">
+                    </div>
+            </div>
+            
+            <div style="width: 100%; text-align: center; color: #a9b7d6; font-size: 12px; margin: 5px 0;">- ODER EIGENES BILD -</div>
+
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+                <span style="color: #a9b7d6; font-size: 14px;">Optionales Profilbild</span>
+                <span id="clear-pic-btn" style="color: #ef4444; font-size: 14px; cursor: pointer; display: none;">✖ Entfernen</span>
+            </div>
+            <input type="file" id="ranked-pic-input" accept="image/*" style="width: 100%; color: white;">
+            
+            <button class="cgo-play-btn" id="btn-start-ranked-game" style="margin-top: 10px; width: 100%;">Los geht's!</button>
+        </div>
+    </div>
+
+    <div id="leaderboard-screen" class="master-fullscreen hidden" style="z-index: 7000;">
+        <div class="master-fs-header">Top Spieler</div>
+        <div class="master-fs-content" id="leaderboard-list" style="overflow-y: auto; max-height: 60vh; padding-right: 10px;">
+        </div>
+        <div class="master-fs-footer" style="position: relative; margin-top: 20px; text-align: center; bottom: 0; left: 0; display: flex; justify-content: center; gap: 15px;">
+            <button class="btn-fs-back" id="btn-close-leaderboard" style="margin: 0;">
+                <svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Zurück
+            </button>
+            <button class="btn-fs-back" id="btn-retry-from-leaderboard" style="margin: 0; background-color: #31c817; box-shadow: 0 6px 0 #23930e, 0 10px 20px rgba(0,0,0,0.4); display: none;">
+                🔄 Retry
+            </button>
+        </div>
+    </div>
+    
+    <div id="hidden-room" class="master-fullscreen hidden" style="z-index: 9999; background: radial-gradient(circle, #4a00e0, #8e2de2);">
+        <div class="master-fs-header" style="color: #fff; text-shadow: 0 4px 15px rgba(255,255,255,0.5);">Admin Panel</div>
+        
+        <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 10px;">
+            <input type="number" id="admin-global-highscore" placeholder="Global Highscore" style="width: 150px; padding: 10px; border-radius: 8px; border: none; background: #3b4c73; color: white; outline: none;">
+            <button class="action-btn" id="btn-admin-save-highscore" style="width: auto; padding: 0 15px; height: 38px;">Setzen</button>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 15px;">
+            <button class="action-btn" id="btn-admin-add" style="width: 250px; height: 50px; font-size: 18px; background-color: #3b4c73; box-shadow: 0 4px 0 #212943;">+ Neuen Eintrag hinzufügen</button>
+        </div>
+        <div class="master-fs-content" id="admin-list" style="overflow-y: auto; max-height: 60vh; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 12px;">
+            </div>
+        <div class="master-fs-footer" style="position: relative; margin-top: 20px; text-align: center; bottom: 0; left: 0;">
+            <button class="btn-fs-back" id="btn-leave-room" style="margin: 0 auto; background-color: #333; box-shadow: 0 6px 0 #111;">Schließen</button>
+        </div>
+    </div>
+
+    <div id="admin-edit-modal" class="settings-overlay hidden" style="z-index: 10000;">
+        <div class="settings-content" style="display: flex; flex-direction: column; gap: 15px; align-items: center; position: relative;">
+            <div class="settings-header" style="width: 100%; position: relative; min-height: 32px; justify-content: center; display: flex;">
+                <span id="admin-modal-title" style="font-size: 22px; text-align: center; margin: 0;">Eintrag bearbeiten</span>
+                <span class="close-settings" id="close-admin-edit" style="position: absolute; right: -5px; top: -5px; transform: none;">✕</span>
+            </div>
+            
+            <input type="hidden" id="admin-edit-index">
+            <input type="text" id="admin-name" placeholder="Spielername" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: #3b4c73; color: white; outline: none;">
+            <input type="number" id="admin-score" placeholder="Score" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: #3b4c73; color: white; outline: none;">
+            <input type="text" id="admin-date" placeholder="Datum (z.B. 12.10.2023)" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: #3b4c73; color: white; outline: none;">
+            <input type="text" id="admin-time" placeholder="Uhrzeit (z.B. 14:30)" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: #3b4c73; color: white; outline: none;">
+            
+            <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 5px;">
+                <span style="color: #a9b7d6; font-size: 14px;">Profilbild</span>
+                <span id="admin-clear-pic" style="color: #ef4444; font-size: 14px; cursor: pointer;">✖ Entfernen</span>
+            </div>
+            <input type="file" id="admin-pic-input" accept="image/*" style="width: 100%; color: white;">
+            
+            <button class="cgo-play-btn" id="btn-admin-save" style="margin-top: 10px; width: 100%; height: 50px;">Speichern</button>
+        </div>
+    </div>
+
+    <script src="ahmad.js"></script>
+    <script src="zemanuel.js"></script>
+    <script src="zadrian.js"></script> 
+    <script src="zpb1.js"></script>
+    <script src="zpb2.js"></script>
+    <script src="zpb3.js"></script>
+    <script src="zassets.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
